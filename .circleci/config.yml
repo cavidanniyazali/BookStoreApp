@@ -1,43 +1,43 @@
-#version: 2.1
-#
-#executors:
-#  default:
-#    docker:
-#      - image: cimg/openjdk:17.0
-#
-#jobs:
-#  build:
-#    executor: default
-#    steps:
-#      - checkout
-#      - run:
-#          name: Build and Test
-#          command: |
-#            docker-compose build
-#            docker-compose run --rm backend ./gradlew test
-#
-#  deploy:
-#    executor: default
-#    steps:
-#      - checkout
-#      - run:
-#          name: Build and Push Docker Image
-#          command: |
-#            docker-compose build
-#            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#            docker-compose push
-#
-#workflows:
-#  version: 2
-#  build_and_deploy:
-#    jobs:
-#      - build:
-#          filters:
-#            branches:
-#              only: main
-#      - deploy:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only: main
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: cimg/openjdk:17.0
+
+jobs:
+  build:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Build and Test
+          command: |
+            docker-compose build
+            docker-compose run --rm backend ./gradlew test
+
+  deploy:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Build and Push Docker Image
+          command: |
+            docker-compose build
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker-compose push
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: main
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
