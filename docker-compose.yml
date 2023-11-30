@@ -1,0 +1,67 @@
+#version: '3'
+services:
+  ingress-task-postgres:
+    hostname: postgres-db
+    image: postgres
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookstore
+    networks:
+      - ingress-task-network
+#  web-server:
+#    image: nginx
+#    ports:
+#      - "4444:80"
+  backend:
+    container_name: docker-backend
+    build: .
+    hostname: ingress-backend
+    image: ingress-task:v.1
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOSTNAME: ${db_hostname}
+      DATABASE_PASSWORD: password
+#      spring.datasource.username: postgres
+    depends_on:
+      - ingress-task-postgres
+    networks:
+      - ingress-task-network
+
+networks:
+  ingress-task-network:
+#    driver: bridge
+  ingress-task-network2:
+volumes:
+  db_data:
+
+#version: '3'
+#
+#services:
+#  liquibase:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - postgres
+##  db:
+##  postgres:
+#  ingress-task-postgres:
+#    image: postgres:latest
+#    ports:
+#      - "5433:5432"
+#    volumes:
+##      - /path/to/local/directory:/var/lib/postgresql/data
+#      - db_data:/var/lib/postgresql
+##    container_name: ingress-task-postgres
+#    environment:
+#      POSTGRES_DB: bookstore
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: password
+#volumes:
+#  db_data:
