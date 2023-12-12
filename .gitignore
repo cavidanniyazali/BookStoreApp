@@ -34,8 +34,6 @@ build/
 
 ### ENV File ###
 .env
-.env/
 
 ### DOCKER File ###
 .dockerignore
-.dockerignore/
